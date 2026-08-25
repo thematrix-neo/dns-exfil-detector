@@ -62,7 +62,11 @@ WEIGHTS = {
 }
 
 FLAG_THRESHOLD = 0.55       # tune this against benign traffic later
-
+MIN_QUERIES_TO_FLAG = 30    # volume gate:real exfil moves data,so it takes
+			    # many queries. Below this, don't flag regardless
+			    # of score. KNOWN BLIND SPOT:a low-and-slow tunnel
+			    # that trickles data stays under this evades -
+			    # a time-windowed rate check would be the next step.
 
 def clamp(x, lo=0.0, hi=1.0):
     return max(lo, min(hi, x))
@@ -111,7 +115,12 @@ def main():
     print(f"{'verdict':12} {'score':>6}  {'domain':28} evidence")
     print("-" * 90)
     for score, reg, ev in results:
-        verdict = "SUSPICIOUS" if score >= FLAG_THRESHOLD else "ok"
+        # Volume gate (Option 1): a domain must clear both the score threshold
+        # AND a minimum query count to be flagged. This suppresses benign
+        # high-entropy hosts (e.g. hash-named CDN content) that trip the score
+        # but never carry real data volume.
+        flagged = score >= FLAG_THRESHOLD and ev["queries"] >= MIN_QUERIES_TO_FLAG
+        verdict = "SUSPICIOUS" if flagged else "ok"
         ev_str = (f"uniq={ev['uniq_subs']} q={ev['queries']} "
                   f"ent={ev['mean_ent']} txt={ev['txt%']} len={ev['max_len']}")
         print(f"{verdict:12} {score:6.2f}  {reg:28} {ev_str}")
@@ -119,5 +128,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
