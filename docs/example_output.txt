@@ -1,0 +1,14 @@
+verdict       score  domain                       evidence
+------------------------------------------------------------------------------------------
+SUSPICIOUS     0.88  example.com                  uniq=73 q=76 ent=4.25 txt=0.32 len=64
+ok             0.79  contentcache.com             uniq=12 q=12 ent=3.87 txt=0.0 len=40
+ok             0.32  cloud-service.io             uniq=5 q=25 ent=2.36 txt=0.0 len=26
+ok             0.32  cdn-provider.net             uniq=6 q=50 ent=2.64 txt=0.0 len=30
+ok             0.31  example.org                  uniq=2 q=4 ent=1.0 txt=0.0 len=16
+ok             0.29  googleapis.com               uniq=1 q=6 ent=2.32 txt=0.0 len=20
+ok             0.24  jsdelivr.net                 uniq=1 q=5 ent=1.58 txt=0.0 len=16
+ok             0.22  weather.com                  uniq=1 q=6 ent=1.58 txt=0.0 len=15
+ok             0.13  cloudflare.com               uniq=1 q=4 ent=0.0 txt=0.0 len=14
+ok             0.13  wikipedia.org                uniq=1 q=4 ent=0.0 txt=0.0 len=13
+ok             0.12  github.com                   uniq=1 q=4 ent=0.0 txt=0.0 len=10
+ok             0.09  fedoraproject.org            uniq=1 q=8 ent=0.0 txt=0.0 len=17

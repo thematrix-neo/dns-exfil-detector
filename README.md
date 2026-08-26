@@ -84,6 +84,26 @@ locally (no live network):
 All test traffic targets documentation/test IP ranges and is generated for
 the sole purpose of validating this defensive detector.
 
+## Example output
+
+Running the scorer on a mixed capture (benign traffic + a synthetic tunnel):
+
+```
+verdict score domain evidence
+
+SUSPICIOUS 0.88 example.com uniq=73 q=76 ent=4.25 txt=0.32 len=64
+ok 0.79 contentcache.com uniq=12 q=12 ent=3.87 txt=0.0 len=40
+ok 0.32 cloud-service.io uniq=5 q=25 ent=2.36 txt=0.0 len=26
+ok 0.29 googleapis.com uniq=1 q=6 ent=2.32 txt=0.0 len=20
+ok 0.13 cloudflare.com uniq=1 q=4 ent=0.0 txt=0.0 len=14
+ok 0.09 fedoraproject.org uniq=1 q=8 ent=0.0 txt=0.0 len=17
+```
+
+The tunnel (`example.com`) is flagged. Note `contentcache.com` scores high
+(0.79) on entropy and unique-subdomain ratio, but the **volume gate**
+correctly keeps it unflagged: with only 12 queries it isn't moving data.
+This is the false-positive case the gate was designed to catch.
+
 ## Usage
 
 ```bash
