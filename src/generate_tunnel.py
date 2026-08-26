@@ -64,7 +64,8 @@ def build_pcap(names, path, domain):
 
 def main():
     ap = argparse.ArgumentParser(description="Synthetic DNS tunnel generator (lab use).")
-    ap.add_argument("--infile", required=True, help="file to encode into the tunnel")
+    ap.add_argument("--infile", help="file to encode into the tunnel"
+                                     "(if omitted, sample data is generated)")
     ap.add_argument("--domain", required=True, help="domain you control, e.g. tunnel.example.com")
     ap.add_argument("--label-len", type=int, default=40, help="chars per data label (max 63)")
     ap.add_argument("--names-out", default="data/pcaps/tunnel_names.txt")
@@ -75,8 +76,14 @@ def main():
     if args.label_len > 63:
         raise SystemExit("DNS labels max out at 63 chars; pick --label-len <= 63")
 
-    with open(args.infile, "rb") as f:
-        data = f.read()
+    if args.infile:
+        with open(args.infile, "rb") as f:
+            data = f.read()
+    else:
+        # No input file given — generate reproducible sample data so the
+        # tool works out of the box on a fresh clone.
+        data = (b"The quick brown fox jumps over the lazy dog. " * 40)
+        print("[i] no --infile given; using built-in sample data")
 
     payload = encode_payload(data)
     names = build_query_names(payload, args.domain, args.label_len)
